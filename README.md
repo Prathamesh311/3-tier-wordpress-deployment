@@ -1,11 +1,25 @@
 # 3tier-wordpress-deployment
 3-Tier Web Application Deployment on AWS using the LAMP Stack (Linux, Apache, MySQL, PHP)
 
+## 📝 Project Overview
+
+This project deploys a WordPress website on AWS using a three-tier architecture. The WordPress application runs on an EC2 instance configured with the LAMP stack (Linux, Apache, MySQL client, and PHP), while the database is hosted on an Amazon RDS MySQL instance for improved security and easier management. An Application Load Balancer (ALB) is used to route incoming traffic to the EC2 instance, providing a single access point and better availability. WordPress is configured to connect to the RDS database using the RDS endpoint, and the site can be accessed through the ALB DNS once the setup is completed.
+
+## ⭐ Key Features
+
+- Deploys WordPress on an EC2 instance using the LAMP stack (Linux, Apache, MySQL client, PHP)
+- Uses Amazon RDS MySQL for secure and managed database hosting
+- Integrates an Application Load Balancer (ALB) for improved traffic distribution and availability
+- Separates application and database layers following a 3-tier architecture
+- Configures WordPress to connect directly with the RDS database endpoint
+- Ensures easier scaling and better performance compared to single-server setups
+- Provides a clean and repeatable setup process for cloud-based WordPress hosting
+---
 1. Launch a Amazon Linux 2 image EC2 instance 
-![]()
+![server](png/server.png)
 2. Create a RDS MySQL Engine (private)
    Allow protocols in SG , MySQL or anywhere
-![]()
+![rds](png/db.png)
 
 3. Login to the EC2 instance and install MySQL client
   
@@ -16,6 +30,7 @@ Export MySQL endpoint as MySQL_HOST Variable
 ```bash
 export MYSQL_HOST=backend-db.cxi20mqqq3c5.ap-south-1.rds.amazonaws.com
 ```
+![console1](png/console1.png)
 
 4. Connect to RDS and create Database
 
@@ -50,7 +65,7 @@ ls
 
 cd wordpress
 ```
-![]()
+![console3](png/console3.png)
 
 Create a wp-config file from sample file already provided.
 ```bash
@@ -81,6 +96,7 @@ define( 'DB_PASSWORD' , 'root12345' );
 /* MySQL hostname */
 define( 'DB_HOST' , 'backend-db.cxi20mqqq3c5.ap-south-1.rds.amazonaws.com');
 ```
+![console2](png/console2.png)
 
 7. Now go to below link and it provides some information to update the wp-config file .
     It looks like below shared one .
@@ -105,7 +121,25 @@ service httpd restart
 
 10. place the EC2 public ip to the browser : it ask for username and password and install wordpress.
 
-![]()
+![login](png/login.png)
 
-![]()
+![page](png/page.png)
 
+11. For High Availability and Zero downtime 
+
+Create image from the current EC2 and launch one more EC2 from it.
+
+![ec2](png/EC2.png)
+
+create a target Group and add the both EC2 instances in the target group for ALB and attach that target group to Application load banlancer.
+
+![target](png/target-tg.png)
+
+12. Create a ALB 
+![alb](png/ALB.png)
+
+After that give the DNS url to User!!
+
+## 🎉 Final Result
+
+A complete WordPress site is now hosted on AWS using ALB, EC2, and RDS, fully configured and ready to use.
