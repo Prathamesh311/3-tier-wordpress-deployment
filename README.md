@@ -1,43 +1,47 @@
 # 3tier-wordpress-deployment
 3-Tier Web Application Deployment on AWS using the LAMP Stack (Linux, Apache, MySQL, PHP)
-=======================================================================
 
---> Launch a Amazon Linux 2 image EC2 instance 
---> Create a RDS MySQL Engine (private)
---> Allow protocols in SG , MySQL or anywhere
+1. Launch a Amazon Linux 2 image EC2 instance 
+![]()
+2. Create a RDS MySQL Engine (private)
+   Allow protocols in SG , MySQL or anywhere
+![]()
 
-==================MySQL Client=====================================
-
---->install MySQL client 
+3. Login to the EC2 instance and install MySQL client
+  
+```bash
  yum install -y MySQL
+```
+Export MySQL endpoint as MySQL_HOST Variable
+```bash
+export MYSQL_HOST=backend-db.cxi20mqqq3c5.ap-south-1.rds.amazonaws.com
+```
 
----> Export MySQL endpoint as MySQL_HOST Variable,
-example : export MYSQL_HOST=mysqldb.cdbmlufjd.ap-south-1.rds.amazon.com
+4. Connect to RDS and create Database
 
-export MYSQL_HOST=<your-RDS-endpoint>
-
-=================Connect to RDS and create DB ========================
-
---->Connect to RDS MySQL to create required database and users
-
-mysql -h mysqldb.cdbmlufjd.ap-south-1.rds.amazon.com -P 3306 -u admin -p
-
----> create a database 
-
+Connect to RDS MySQL to create required database and users
+```bash
+mysql -h backend-db.cxi20mqqq3c5.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+```
+create a database
+```bash
 CREATE DATABASE wordpress;
 CREATE USER 'wpuser' IDENTIFIED BY 'root12345';
 GRANT ALL PRIVILEGES ON wordpress.* TO wpuser;
 FLUSH PRIVILEGES;
 Exit
-===================================================================
-Now install and configure apache
-===============================================================
+```
 
-sudo yum install -y httpd
-sudo service httpd start
+5. Now install and configure apache server to deploy the wordpress application
+
+```bash
+yum install -y httpd
+service httpd start
+```
 
 Download a wordpress template and unzip the wordpress
 
+```bash
 wget https://wordpress.org/latest.tar.gz
 
 tar -xzf latest.tar.gz
@@ -45,52 +49,63 @@ tar -xzf latest.tar.gz
 ls
 
 cd wordpress
+```
+![]()
 
--->create a wp-config file from sample file already provided
+Create a wp-config file from sample file already provided.
+```bash
+touch wp-config.php
 
 cp wp-config-sample.php wp-config.php
 
 cat wp-config.php
+```
 
---> edit the wp-config.php file to point to database 
-
+6. Edit the wp-config.php file to point to backend-db database.
+```bash
 vi wp-config.php
+```
 
---> Replace the Database_name_here , "username_here" , "password_here" and "rds-endpoint-name" with valid info
-
-
-// ** MySQL settings - you can get this info from your web host **//
+Replace the Database_name_here , "username_here" , "password_here" and "rds-endpoint-name" with valid information
 
 /* The name of the database for wordpress */
-
-define( 'DB_NAME' , 'database_name_here-wordpress' );
+```bash
+define( 'DB_NAME' , 'wordpress' );
 
 /** MySQL database username **/
-define ( 'DB_USER' , 'username_here-wordpressuser' );
+define ( 'DB_USER' , 'wpuser' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD' , 'password_here-root12345' );
+define( 'DB_PASSWORD' , 'root12345' );
 
 /* MySQL hostname */
-define( 'DB_HOST' , 'rds-endpoint-name-rds endpoint');
+define( 'DB_HOST' , 'backend-db.cxi20mqqq3c5.ap-south-1.rds.amazonaws.com');
+```
 
----> now go to below link and it provides some information to update the wp-config file . It looks like below shared one .
+7. Now go to below link and it provides some information to update the wp-config file .
+    It looks like below shared one .
+```bash
+https://api.wordpress.org/secret-key/1.1/salt/ --> open this in browser , it will generate few tokens and replace in this file.
+```
+8. Now install dependencies for the Amazon-linux-2 machine.
 
-https://api.wordpress.org/secret-key/1.1/salt/ --> open this in browser , it will generate few tokens and replace in this file 
-===================================================================================================
-
-8 TOKENS WILL BE THERE REPLACE TOKEN !!!
-===================================================================================================`
----> Now install dependencies
-
+```bash
 sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+```
 
----> come back to home directory and copy all context to /var/www/html , then restart the service.
+9. Come back to home directory and copy all context to /var/www/html , then restart the service.
 
+```bash
 cd /home/ec2-user
 
-sudo cp -r wordpress/* /var/www/html/
+cp -r wordpress/* /var/www/html/
 
-sudo service httpd restart
+service httpd restart
+```
 
-place public ip to the browser : it ask for username and password and install wordpress
+10. place the EC2 public ip to the browser : it ask for username and password and install wordpress.
+
+![]()
+
+![]()
+
