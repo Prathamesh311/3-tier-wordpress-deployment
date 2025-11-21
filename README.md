@@ -138,7 +138,11 @@ create a target Group and add the both EC2 instances in the target group for ALB
 12. Create a ALB 
 ![alb](png/ALB.png)
 
-After that give the DNS url to User!!
+After that give the DNS url to User to Access the application!!
+
+```bash
+LAMP-ALB-467700407.ap-south-1.elb.amazonaws.com
+```
 
 ## 🎉 Final Result
 
